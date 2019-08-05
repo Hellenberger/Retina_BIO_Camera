@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3D0BB96022C264A80085C34A /* centerCircle.png in Resources */ = {isa = PBXBuildFile; fileRef = 3D0BB95F22C264A80085C34A /* centerCircle.png */; };
 		3D380B8F22BC596900845279 /* AppIcon.appiconset in Resources */ = {isa = PBXBuildFile; fileRef = 3D380B8E22BC596900845279 /* AppIcon.appiconset */; };
 		3D380B9122BC620D00845279 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D380B9022BC620D00845279 /* Images.xcassets */; };
 		3D91C33422D68C8000297365 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D91C33322D68C8000297365 /* UIKit.framework */; };
@@ -21,7 +20,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3D0BB95F22C264A80085C34A /* centerCircle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = centerCircle.png; sourceTree = "<group>"; };
 		3D380B8E22BC596900845279 /* AppIcon.appiconset */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AppIcon.appiconset; sourceTree = "<group>"; };
 		3D380B9022BC620D00845279 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		3D91C33322D68C8000297365 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -79,7 +77,6 @@
 				3DA1747C22E94016000959BC /* shutter_click.mp3 */,
 				3DA57FFE22BAB9D000F952CA /* AppDelegate.swift */,
 				3DA5800022BAB9D000F952CA /* ViewController.swift */,
-				3D0BB95F22C264A80085C34A /* centerCircle.png */,
 				3DA5800222BAB9D000F952CA /* Main.storyboard */,
 				3DA5800822BAB9D100F952CA /* Assets.xcassets */,
 				3D380B8E22BC596900845279 /* AppIcon.appiconset */,
@@ -152,7 +149,6 @@
 				3D380B8F22BC596900845279 /* AppIcon.appiconset in Resources */,
 				3D380B9122BC620D00845279 /* Images.xcassets in Resources */,
 				3DA5800C22BAB9D100F952CA /* LaunchScreen.storyboard in Resources */,
-				3D0BB96022C264A80085C34A /* centerCircle.png in Resources */,
 				3DA1747D22E94016000959BC /* shutter_click.mp3 in Resources */,
 				3DA5800922BAB9D100F952CA /* Assets.xcassets in Resources */,
 				3DA5800422BAB9D000F952CA /* Main.storyboard in Resources */,

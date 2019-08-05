@@ -13,6 +13,7 @@ import AudioToolbox
 
 class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
+    
     var timestamp:Double!
     let defaults = UserDefaults.standard
     let key = "PictureTaken"
@@ -22,6 +23,9 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     var audioPlayer = AVAudioPlayer()
     
     @IBOutlet weak var timeStamp: UILabel!
+        var now = ""
+    
+    
     
     @IBOutlet weak var imageSaved: UILabel!
     
@@ -60,9 +64,7 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         let device = AVCaptureDevice.default(for: .video)
         do {
             try device?.lockForConfiguration()
-        } catch {
-        }
-        do {
+        
             try device?.setFocusModeLocked(lensPosition: slider.value)
         } catch {
         }
@@ -76,11 +78,13 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         device?.unlockForConfiguration()
     }
 
+    //let imageView = UIImageView(frame: CGRect(x: 50, y: 50, width: 300, height: 300))
+
+    
     @IBAction func buttonPressed(_ sender: Any?) {
-        print("Button Pressed")
         
         print(initialVolume)
-        setVolumeLevel(initialVolume)
+       
         
         takePhoto ()
 
@@ -89,50 +93,21 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                 print(error ?? "Image capture error")
                 return
             }
-            let squareImage = image.cropToSquare(image: image)
+            let flippedImage = image.withHorizontallyFlippedOrientation()
+            
+
+            let squareImage = flippedImage.cropToSquare(image: flippedImage)
             let roundedImage = squareImage?.roundedImage()
             let newImage = roundedImage?.rotate(radians: -.pi/2) // Rotate 90 degrees
+
 
             try? PHPhotoLibrary.shared().performChangesAndWait {
                 PHAssetChangeRequest.creationRequestForAsset(from: newImage!)
             }
+        
+            self.setVolumeLevel(self.initialVolume)
         }
     }
-}
-
-extension Date {
-    
-    // Convert UTC (or GMT) to local time
-//    func toLocalTime() -> Date {
-//        let timezone = TimeZone.current
-//        let seconds = TimeInterval(timezone.secondsFromGMT(for: self))
-//        let currentTime = Date(timeInterval: seconds, since: self)
-//        print("Date: ", currentTime)
-//
-//        func localizedString(from date: Date,
-//                                   dateStyle dstyle: DateFormatter.Style = .medium,
-//                                   timeStyle tstyle: DateFormatter.Style = .medium) -> String {
-//
-//            print ("Date: ", DateFormatter.localizedString(
-//                from: currentTime,
-//                dateStyle: .medium,
-//                timeStyle: .medium))
-//
-//            let formatter = DateFormatter()
-//
-//            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-//            let textDate = localizedString(from: currentTime)
-// //           print("Date: ", localizedString(from: currentTime))
-//            print("TEST", textDate)
-//            return DateFormatter.localizedString(
-//                    from: currentTime,
-//                    dateStyle: .medium,
-//                    timeStyle: .medium)
-//            }
-//        return Date(timeInterval: seconds, since: self)
-//    }
-   
-
 }
 
 extension ViewController {
@@ -208,7 +183,7 @@ extension ViewController {
             }
             do {
                 try currentDevice.lockForConfiguration()
-                try currentDevice.setTorchModeOn(level: 0.1) } catch { currentDevice.unlockForConfiguration() }
+                try currentDevice.setTorchModeOn(level: 0.5) } catch { currentDevice.unlockForConfiguration() }
         }
     }
     
@@ -228,8 +203,12 @@ extension ViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        startListeningVolumeButton(initialVolume)
-        setVolumeLevel(initialVolume)
+        
+                setVolumeLevel(initialVolume)
+        
+
+
+        
         
         mainView.layer.cornerRadius = 120
 
@@ -243,7 +222,7 @@ extension ViewController {
         replicatorLayer.addSublayer(cameraView)
         self.view.layer.addSublayer(replicatorLayer)
         
-        var settings = AVCapturePhotoSettings()
+        var settings = AVCapturePhotoBracketSettings()
 
         //Camera
         AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
@@ -276,12 +255,24 @@ extension ViewController {
                 }
         
             // Configure camera
-            settings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
-            settings.isAutoStillImageStabilizationEnabled = true
+        // Get AVCaptureBracketedStillImageSettings for a set of exposure values.
+        let exposureValues: [Float] = [-1, 0, +1]
+        let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias:)
+        let exposureSettings = exposureValues.map(makeAutoExposureSettings)
+
+        
+        settings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0,
+                                                 processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc],
+                                                 bracketedSettings: exposureSettings)
+        settings.isLensStabilizationEnabled =
+            self.photoOutput!.isLensStabilizationDuringBracketedCaptureSupported
+
+               // .init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+           // settings.isAutoStillImageStabilizationEnabled = true
             settings.isHighResolutionPhotoEnabled = true
             settings.isDualCameraDualPhotoDeliveryEnabled = true
             settings.isAutoDualCameraFusionEnabled = false
-
+        // Shoot the bracket, using a custom class to handle capture delegate callbacks.
             if session!.canAddOutput(photoOutput!) {
                 session!.addOutput(photoOutput!)
                 
@@ -320,7 +311,7 @@ extension ViewController {
         device?.unlockForConfiguration()
         
         torchSlider.maximumValue = 1.0
-        torchSlider.minimumValue = 0.10
+        torchSlider.minimumValue = 0.1
         
         let currentValue = sender.value
         let intValue = Int(currentValue * 100.0)
@@ -330,11 +321,11 @@ extension ViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         session.startRunning()
-        timeAsText()
+
         flashActive()
     }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -354,9 +345,15 @@ extension ViewController {
     func captureImage(completion: @escaping (UIImage?, Error?) -> Void) {
         guard let captureSession = session, captureSession.isRunning else { completion(nil, CameraViewControllerError.captureSessionIsMissing); return }
         
-        let settings = AVCapturePhotoSettings()
+        let exposureValues: [Float] = [-2, 0, +2]
+        let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias:)
+        let exposureSettings = exposureValues.map(makeAutoExposureSettings)
+        let settings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0,
+                                                     processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc],
+                                                     bracketedSettings: exposureSettings)
         
         self.photoOutput?.capturePhoto(with: settings, delegate: self)
+        
         self.photoCaptureCompletionBlock = completion
     }
 }
@@ -372,6 +369,17 @@ extension UIView {
             self.alpha = 0.0
             }, completion: completion)
         }
+    
+        func copyObject<T: UIView> () -> T? {
+            do {
+                let archivedData = try NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
+                
+                return try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(archivedData) as? T
+            } catch {
+                print("Couldn't write file")
+            }
+            return copyObject()
+    }
 }
 
 public extension UIImage {
@@ -417,17 +425,6 @@ public extension UIImage {
 }
 
 extension ViewController {
-    
-    func timeAsText() {
-        let dateformatter = DateFormatter()
-        
-        dateformatter.dateStyle = DateFormatter.Style.long
-        
-        dateformatter.timeStyle = DateFormatter.Style.medium
-        
-        let now = dateformatter.string(from: Date())
-        print("The Time is: ", now)
-    }
    
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         
@@ -435,7 +432,7 @@ extension ViewController {
         
         guard let imageData = photo.fileDataRepresentation() else { return }
 
-    if let image = UIImage(data: imageData) {
+        if let image = UIImage(data: imageData) {
 
             self.photoCaptureCompletionBlock?(image, nil)
             }
@@ -443,33 +440,14 @@ extension ViewController {
         else {
             self.photoCaptureCompletionBlock?(nil, CameraViewControllerError.unknown)
         }
-        //let textDate = timeAsText().now
-//            let font = UIFont.boldSystemFont(ofSize: 18)
-//            let showText:NSString = timeAsText()
-//            // setting attr: font name, color...etc.
-//            let attr = [NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor:UIColor.white]
-//            // getting size
-//            let sizeOfText = showText.size(withAttributes: attr)
-//            let rect = CGRect(x: 0, y: 0, width: image!.size.width, height: image!.size.height)
-//
-//            UIGraphicsBeginImageContextWithOptions(CGSize(width: rect.size.width, height: rect.size.height), true, 0)
-//
-//            // drawing our image to the graphics context
-//            image?.draw(in: rect)
-//            // drawing text
-//            showText.draw(in: CGRect(x: rect.size.width-sizeOfText.width-10, y: rect.size.height-sizeOfText.height-10, width: rect.size.width, height: rect.size.height), withAttributes: attr)
-//
-//            // getting an image from it
-//            let labelledImage = UIGraphicsGetImageFromCurrentImageContext();
-//            UIGraphicsEndImageContext()
-//
-//            self.cameraView.image = labelledImage
-        }
-
+    }
 }
 
-extension UIImage {
+public extension UIImage {
+    
     func rotate(radians: Float) -> UIImage? {
+        
+
         var newSize = CGRect(origin: CGPoint.zero, size: self.size).applying(CGAffineTransform(rotationAngle: CGFloat(radians))).size
         // Trim off the extremely small float value to prevent core graphics from rounding it up
         newSize.width = floor(newSize.width)
@@ -485,67 +463,126 @@ extension UIImage {
         // Draw the image at its center
         self.draw(in: CGRect(x: -self.size.width/2, y: -self.size.height/2, width: self.size.width, height: self.size.height))
 
-        var newImage = UIGraphicsGetImageFromCurrentImageContext()
+        let rotatedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
+        //let timeStamp : UILabel
+        UIGraphicsBeginImageContext(rotatedImage!.size)
+            
+        rotatedImage!.draw(in: CGRect(x: 20, y: 0, width: rotatedImage!.size.width, height: rotatedImage!.size.height))
+        
+        //draw label
+        
+        //let vc = ViewController()
+        
+        
+        let labelRect = CGRect(x: 50, y: 50, width: rotatedImage!.size.width - 100, height: rotatedImage!.size.height / 16)
+        
+        let timeStamp = UILabel(frame: labelRect)
+        
+        let dateformatter = DateFormatter()
+        
+        dateformatter.dateStyle = DateFormatter.Style.long
+        
+        dateformatter.timeStyle = DateFormatter.Style.medium
+        
+        let now = dateformatter.string(from: Date())
+        
+        print(now)
+        timeStamp.backgroundColor = UIColor.clear
+        timeStamp.textAlignment = .center
+        timeStamp.textColor = UIColor.gray
+        timeStamp.font = UIFont.systemFont(ofSize: 30)
+        timeStamp.alpha = 0.5
+        timeStamp.text = now
+        timeStamp.drawHierarchy(in: labelRect, afterScreenUpdates: true)
+
+        
+        //get the final image
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        UIGraphicsEndImageContext()
         return newImage
     }
 }
 
 extension ViewController {
 
-    func startListeningVolumeButton(_ volume: Float) {
-
-        let audioSession = AVAudioSession.sharedInstance()
-
-        do {
-            try audioSession.setActive(true)
-
-            let vol = audioSession.outputVolume
-            initialVolume = Float(vol.description)!
-            if initialVolume > 0.6 {
-                initialVolume -= 0.5
-            } else if initialVolume < 0.4 {
-                initialVolume += 0.5
-            }
-
-            audioSession.addObserver(self, forKeyPath: "outputVolume", options: .new, context: nil)
-        } catch {
-            print("Could not observe outputVolume ", error)
-        }
-    }
+//    func startListeningVolumeButton(_ volume: Float) {
 //
-//    func stopListeningVolumeButton() {
 //
-//        AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume")
+//        let audioSession = AVAudioSession.sharedInstance()
 //
-//        volumeView.removeFromSuperview()
-//        volumeView = nil
+//        do {
+//            try audioSession.setActive(true)
+//
+//            let vol = audioSession.outputVolume
+//            initialVolume = Float(vol.description)!
+//            if initialVolume > 0.6 {
+//                initialVolume -= 0.5
+//            } else if initialVolume < 0.4 {
+//                initialVolume += 0.5
+//            }
+//
+//            audioSession.addObserver(self, forKeyPath: "outputVolume", options: .new, context: nil)
+//        } catch {
+//            print("Could not observe outputVolume ", error)
+//        }
 //    }
     
-    func setVolume(_ volume: Float) {
-        let volume = MPVolumeView(frame: .zero)
-        volume.setVolumeThumbImage(UIImage(), for: UIControl.State())
-        volume.isUserInteractionEnabled = false
-        volume.alpha = 0.00001
-        volume.showsRouteButton = false
-        view.addSubview(volume)
-    }
+//    func setVolume(_ volume: Float) {
+//
+//        let audioSession = AVAudioSession.sharedInstance()
+//
+//        do {
+//            try audioSession.setActive(true)
+//
+//        let volume = MPVolumeView(frame: .zero)
+//        volume.setVolumeThumbImage(UIImage(), for: UIControl.State())
+//        volume.isUserInteractionEnabled = false
+//        volume.alpha = 0.00001
+//        volume.showsRouteButton = false
+//        view.addSubview(volume)
+//
+//        audioSession.addObserver(self, forKeyPath: "outputVolume", options: .new, context: nil)
+//    } catch {
+//    print("Could not observe outputVolume ", error)
+//    }
+//    }
     
         func setVolumeLevel(_ volumeLevel: Float) {
-            let volume = MPVolumeView(frame: .zero)
-            guard let slider = volume.subviews.compactMap({ $0 as? UISlider }).first else {
-                return
+            let audioSession = AVAudioSession.sharedInstance()
+            
+            do {
+                try audioSession.setActive(true)
+                
+                let volume = MPVolumeView(frame: .zero)
+                volume.setVolumeThumbImage(UIImage(), for: UIControl.State())
+                volume.isUserInteractionEnabled = false
+                volume.alpha = 0.00001
+                volume.showsRouteButton = false
+                view.addSubview(volume)
+                
+                audioSession.addObserver(self, forKeyPath: "outputVolume", options: .new, context: nil)
+                
+                guard let slider = volume.subviews.compactMap({ $0 as? UISlider }).first else {
+                    return
+                }
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
+                    slider.value = volumeLevel
+                }
+                
+                if slider.value >= 0.6 {
+                    slider.value -= 0.5
+                } else if slider.value <= 0.4 {
+                    slider.value += 0.5
+                }
+                
+            } catch {
+                print("Could not observe outputVolume ", error)
             }
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
-                slider.value = volumeLevel
-            }
-
-            if slider.value >= 0.6 {
-                slider.value -= 0.5
-            } else if slider.value <= 0.4 {
-                slider.value += 0.5
-            }
+     
+           
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {

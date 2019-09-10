@@ -10,28 +10,32 @@
 		3D380B8F22BC596900845279 /* AppIcon.appiconset in Resources */ = {isa = PBXBuildFile; fileRef = 3D380B8E22BC596900845279 /* AppIcon.appiconset */; };
 		3D380B9122BC620D00845279 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D380B9022BC620D00845279 /* Images.xcassets */; };
 		3D91C33422D68C8000297365 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D91C33322D68C8000297365 /* UIKit.framework */; };
+		3D94CA8423207AC7009F2BE7 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D94CA8323207AC7009F2BE7 /* SettingsViewController.swift */; };
 		3DA1747D22E94016000959BC /* shutter_click.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3DA1747C22E94016000959BC /* shutter_click.mp3 */; };
 		3DA57FFF22BAB9D000F952CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA57FFE22BAB9D000F952CA /* AppDelegate.swift */; };
-		3DA5800122BAB9D000F952CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA5800022BAB9D000F952CA /* ViewController.swift */; };
+		3DA5800122BAB9D000F952CA /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA5800022BAB9D000F952CA /* CameraViewController.swift */; };
 		3DA5800422BAB9D000F952CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DA5800222BAB9D000F952CA /* Main.storyboard */; };
 		3DA5800722BAB9D000F952CA /* Iphone_BIO_Camera.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3DA5800522BAB9D000F952CA /* Iphone_BIO_Camera.xcdatamodeld */; };
 		3DA5800922BAB9D100F952CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DA5800822BAB9D100F952CA /* Assets.xcassets */; };
 		3DA5800C22BAB9D100F952CA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DA5800A22BAB9D100F952CA /* LaunchScreen.storyboard */; };
+		3DEDC4A0231F4A64006744C9 /* Control_Action_2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DEDC49F231F4A64006744C9 /* Control_Action_2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3D380B8E22BC596900845279 /* AppIcon.appiconset */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AppIcon.appiconset; sourceTree = "<group>"; };
 		3D380B9022BC620D00845279 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		3D91C33322D68C8000297365 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3D94CA8323207AC7009F2BE7 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3DA1747C22E94016000959BC /* shutter_click.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shutter_click.mp3; sourceTree = "<group>"; };
 		3DA57FFB22BAB9D000F952CA /* Iphone_BIO_Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Iphone_BIO_Camera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DA57FFE22BAB9D000F952CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3DA5800022BAB9D000F952CA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3DA5800022BAB9D000F952CA /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		3DA5800322BAB9D000F952CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3DA5800622BAB9D000F952CA /* ReplicateCameraView.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ReplicateCameraView.xcdatamodel; sourceTree = "<group>"; };
 		3DA5800822BAB9D100F952CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3DA5800B22BAB9D100F952CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3DA5800D22BAB9D100F952CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DEDC49F231F4A64006744C9 /* Control_Action_2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Control_Action_2x.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,8 +80,10 @@
 			children = (
 				3DA1747C22E94016000959BC /* shutter_click.mp3 */,
 				3DA57FFE22BAB9D000F952CA /* AppDelegate.swift */,
-				3DA5800022BAB9D000F952CA /* ViewController.swift */,
+				3DA5800022BAB9D000F952CA /* CameraViewController.swift */,
+				3D94CA8323207AC7009F2BE7 /* SettingsViewController.swift */,
 				3DA5800222BAB9D000F952CA /* Main.storyboard */,
+				3DEDC49F231F4A64006744C9 /* Control_Action_2x.png */,
 				3DA5800822BAB9D100F952CA /* Assets.xcassets */,
 				3D380B8E22BC596900845279 /* AppIcon.appiconset */,
 				3DA5800A22BAB9D100F952CA /* LaunchScreen.storyboard */,
@@ -152,6 +158,7 @@
 				3DA1747D22E94016000959BC /* shutter_click.mp3 in Resources */,
 				3DA5800922BAB9D100F952CA /* Assets.xcassets in Resources */,
 				3DA5800422BAB9D000F952CA /* Main.storyboard in Resources */,
+				3DEDC4A0231F4A64006744C9 /* Control_Action_2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,9 +169,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DA5800122BAB9D000F952CA /* ViewController.swift in Sources */,
+				3DA5800122BAB9D000F952CA /* CameraViewController.swift in Sources */,
 				3DA5800722BAB9D000F952CA /* Iphone_BIO_Camera.xcdatamodeld in Sources */,
 				3DA57FFF22BAB9D000F952CA /* AppDelegate.swift in Sources */,
+				3D94CA8423207AC7009F2BE7 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,7 +249,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -298,7 +306,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = Iphone_BIO_Camera;
@@ -318,6 +326,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S4D83HCYW4;
 				INFOPLIST_FILE = Iphone_BIO_Camera/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -337,6 +346,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S4D83HCYW4;
 				INFOPLIST_FILE = Iphone_BIO_Camera/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

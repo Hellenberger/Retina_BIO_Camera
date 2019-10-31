@@ -1,7 +1,7 @@
 //  CameraViewController.swift
 //  ReplicateCameraView
 //
-//  Created by Howard Ellenberger on 6/19/19.
+//  Created by Howard EllenbesetTorchModeOnrger on 6/19/19.
 //  Copyright © 2019 Howard Ellenberger. All rights reserved.
 
 import UIKit
@@ -11,30 +11,33 @@ import AVFoundation
 import Photos
 import AudioToolbox
 
+
+
+
+
 class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
-    var settingsViewController : SettingsViewController!
-    
-    var zoomTo = CGFloat()
-    
-    var torchTo = Float()
+    lazy var torchTo = SettingsViewController().torchTo
+    var finalTorchLevel = Float()
+    var finalZoomLevel = CGFloat()
+    lazy var zoomTo = SettingsViewController().zoomTo
     
     let shutterSound = Bundle.main.url(forResource: "shutter_click", withExtension: "mp3")
     
     let backCamera = AVCaptureDevice.videoDevice()
 
-    var timestamp:Double!
+    var timestamp : Double!
 
-    var audioPlayer = AVAudioPlayer()
+    var audioPlayer : AVAudioPlayer!
 
-    @IBOutlet weak var labelView: UIView!
+    @IBOutlet weak var labelView : UIView!
     
-    @IBOutlet weak var timeStamp: UILabel!
+    @IBOutlet weak var timeStamp : UILabel!
         var now = ""
  
-    @IBOutlet weak var imageSaved: UILabel!
+    @IBOutlet weak var imageSaved : UILabel!
     
-    @IBOutlet var mainView: UIView!
+    @IBOutlet var mainView : UIView!
     
     @IBOutlet weak var cameraView: UIImageView!
     
@@ -54,7 +57,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     var photoOutput: AVCapturePhotoOutput?
     
     override var prefersStatusBarHidden: Bool { return true }
-
+    
     @IBAction func buttonPressed(_ sender: Any?) {
         
         takePhoto ()
@@ -199,15 +202,15 @@ extension CameraViewController {
         
         do {
             try audioSession.setActive(true)
-            
+            audioSession.addObserver(self, forKeyPath: "outputVolume",
+                                     options: NSKeyValueObservingOptions.new, context: nil)
                 let volume = MPVolumeView(frame: .zero)
                 volume.setVolumeThumbImage(UIImage(), for: UIControl.State())
                 volume.isUserInteractionEnabled = false
                 volume.alpha = 0.00001
                 volume.showsRouteButton = false
                 view.addSubview(volume)
-            audioSession.addObserver(self, forKeyPath: "outputVolume",
-                                     options: NSKeyValueObservingOptions.new, context: nil)
+                
               }
             
          catch {
@@ -215,48 +218,68 @@ extension CameraViewController {
         }
     }
     
-    func setVolume(_ volume: Float) {
+    func setVolume(_volume: Float) {
         let volumeView = MPVolumeView()
         let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
-            slider?.value = volume
+            slider?.value = 0.25
         }
+    }
+    
+    func initialVolumeLevel() {
+
+        guard let device = AVCaptureDevice.default(for: .video) else { return }
+        do {
+            try device.lockForConfiguration()
+            setVolume(_volume:  0.25)
+            
+        } catch {
+            debugPrint(error)
+        }
+        device.unlockForConfiguration()
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "outputVolume" {
             buttonPressed(Any?.self)
-            setVolume(0.25)
+            setVolume(_volume: 0.25)
             AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume")
             AVAudioSession.sharedInstance().addObserver(self, forKeyPath: "outputVolume", options: .new, context: nil)
         }
     }
-//
-    func setTorchSlider() {
-
-        let device = AVCaptureDevice.default(for: .video)
-        do {
-            try device?.lockForConfiguration()
-        } catch {
-        }
-        do {
-            try device?.setTorchModeOn(level: torchTo)
-        } catch {
-        }
-        device?.unlockForConfiguration()
-    }
     
+    func flashAndZoom() {
+
+        guard backCamera!.hasTorch else { return }
+             do {
+                try backCamera?.lockForConfiguration()
+
+                if (backCamera?.torchMode == AVCaptureDevice.TorchMode.off) {
+                    backCamera?.torchMode = AVCaptureDevice.TorchMode.on
+                    try backCamera?.setTorchModeOn(level: finalTorchLevel)
+                }
+                } catch {
+                     print("error")
+                }
+            backCamera?.unlockForConfiguration()
+
+            print("post segue finalTorchLevel = ", finalTorchLevel)
+            print("post segue finalZoomLevel = ", finalZoomLevel)
+         }
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+       
+        initialVolume = 0.25
+
         let cameraView = CALayer()
         let replicatorLayer = CAReplicatorLayer()
         let instanceCount = 2
         replicatorLayer.instanceCount = 2
         replicatorLayer.instanceCount = instanceCount
-        replicatorLayer.frame = CGRect(x: 0, y: 15, width: 320, height: 320)
-        replicatorLayer.instanceTransform = CATransform3DMakeTranslation(366, 0, 0)
+        replicatorLayer.frame = CGRect(x: 0, y: 30, width: 320, height: 320)
+        replicatorLayer.instanceTransform = CATransform3DMakeTranslation(352, 0, 0)
         replicatorLayer.addSublayer(cameraView)
         self.view.layer.addSublayer(replicatorLayer)
         
@@ -279,7 +302,7 @@ extension CameraViewController {
             let settings = UIUserNotificationSettings(types: [.sound, .alert, .badge], categories: nil)
             UIApplication.shared.registerUserNotificationSettings(settings)
         }
-        
+
         @available(iOS 10.0, *)
         func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
             
@@ -327,23 +350,28 @@ extension CameraViewController {
                 if error == nil && session!.canAddInput(input) {
                     session!.addInput(input)
                     photoOutput = AVCapturePhotoOutput()
+                }
+                    do {
+                       try backCamera.lockForConfiguration()
+                        
+                    guard backCamera.hasTorch else { return }
+                    let torchOn = !backCamera.isTorchActive
+                    try backCamera.setTorchModeOn(level: finalTorchLevel)
+                    backCamera.torchMode = torchOn ? .on : .off
+                }
+                    if (backCamera.responds(to: #selector(setter: AVCaptureDevice.videoZoomFactor))) {
+                        backCamera.videoZoomFactor = max(1.0, min(CGFloat(finalZoomLevel), (backCamera.activeFormat.videoMaxZoomFactor)))
                     }
+//                    backCamera.unlockForConfiguration()
+                    
                 } catch let error1 as NSError {
                     error = error1
                     print(error!.localizedDescription)
+                    
                 }
-        guard let device = AVCaptureDevice.default(for: .video) else { return }
-        do {
-            try device.lockForConfiguration()
-            defer { device.unlockForConfiguration() }
-            device.videoZoomFactor = zoomTo
-            try device.setTorchModeOn(level: 0.5)
-            
-        } catch {
-            debugPrint(error)
-        }
+        
 
-            // Configure camera
+        // Configure camera
 
         settings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0,
                                                  processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc])
@@ -367,14 +395,20 @@ extension CameraViewController {
                 self.videoPreviewLayer.frame = self.cameraView.frame
                 cameraView.addSublayer(videoPreviewLayer)
         }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         session.startRunning()
-        setTorchSlider()
+        flashAndZoom()
+
         startListeningVolume()
-        setVolume(0.25)
+        setVolume(_volume: 0.25)
+
+//        AVAudioSession.sharedInstance().addObserver(self, forKeyPath: "outputVolume", options: NSKeyValueObservingOptions.new, context: nil)
+//          do { try AVAudioSession.sharedInstance().setActive(true) }
+//          catch { debugPrint("\(error)") }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -394,15 +428,25 @@ extension CameraViewController {
     
     func captureImage(completion: @escaping (UIImage?, Error?) -> Void) {
         guard let captureSession = session, captureSession.isRunning else { completion(nil, CameraViewControllerError.captureSessionIsMissing); return }
-
-        let exposureValues: [Float] = [-1, 0, +1]
-        let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias:)
-        let exposureSettings = exposureValues.map(makeAutoExposureSettings)
-        let settings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0,
-                                                     processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc],
-                                                     bracketedSettings:
-            exposureSettings)
+  
+        let bracketedSettings: [AVCaptureBracketedStillImageSettings]
+        if backCamera?.exposureMode == .custom {
+            bracketedSettings = [AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(exposureDuration: AVCaptureDevice.currentExposureDuration, iso: AVCaptureDevice.currentISO)]
+        } else {
+            bracketedSettings = [AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias: AVCaptureDevice.currentExposureTargetBias)]
+        }
         
+//        if rawEnabled && !photoOutput.__availableRawPhotoPixelFormatTypes.isEmpty {
+//            photoSettings = AVCapturePhotoBracketSettings(rawPixelFormatType: photoOutput.__availableRawPhotoPixelFormatTypes[0].uint32Value, processedFormat: nil, bracketedSettings: bracketedSettings)
+//        } else {
+//            photoSettings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0, processedFormat: [AVVideoCodecKey: AVVideoCodecJPEG], bracketedSettings: bracketedSettings)
+//        let exposureValues: [Float] = [-1, 0, +1]
+//        let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias:)
+//        let exposureSettings = exposureValues.map(makeAutoExposureSettings)
+        
+        let  settings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0, processedFormat: [AVVideoCodecKey: AVVideoCodecType.jpeg], bracketedSettings: bracketedSettings)
+            //AVCapturePhotoSettings()
+
         if photoOutput!.isStillImageStabilizationSupported{
             settings.isAutoStillImageStabilizationEnabled = true
         }
@@ -556,6 +600,13 @@ extension CameraViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume")
+    do { try AVAudioSession.sharedInstance().setActive(false) }
+    catch { debugPrint("\(error)") }
     }
     
     override func didReceiveMemoryWarning() {

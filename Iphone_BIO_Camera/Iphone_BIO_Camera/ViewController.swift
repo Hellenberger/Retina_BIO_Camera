@@ -13,20 +13,17 @@ import AudioToolbox
 
 class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
-    
+    let shutterSound = Bundle.main.url(forResource: "shutter_click", withExtension: "mp3")
+
     var timestamp:Double!
-    let defaults = UserDefaults.standard
-    let key = "PictureTaken"
-    var button: UIButton!
-    var label:UILabel!
-    
+
     var audioPlayer = AVAudioPlayer()
+    
+    @IBOutlet weak var labelView: UIView!
     
     @IBOutlet weak var timeStamp: UILabel!
         var now = ""
-    
-    
-    
+ 
     @IBOutlet weak var imageSaved: UILabel!
     
     @IBOutlet weak var torchSlider: UISlider!
@@ -41,8 +38,9 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     @IBOutlet weak var lensPositionbValueLabel: UILabel!
     
-    let viewBackgroundColor : UIColor = UIColor.black // UIColor.white
-    var initialVolume: Float = 0.0
+    let viewBackgroundColor : UIColor = UIColor.black
+    
+    var initialVolume: Float = 0.25
     var volumeView: MPVolumeView!
     var audioSession: AVAudioSession?
     var volumeUpdated: Bool = false
@@ -58,6 +56,20 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     private var focusModes: [AVCaptureDevice.FocusMode] = []
     
     override var prefersStatusBarHidden: Bool { return true }
+
+    @IBAction func autoFocus(_ sender: Any) {
+        
+        let captureDevice = AVCaptureDevice.default(for: .video)
+        do {
+            try captureDevice?.lockForConfiguration()
+
+        } catch {
+        }
+        captureDevice?.isFocusModeSupported(.continuousAutoFocus)
+        try! captureDevice?.lockForConfiguration()
+        captureDevice?.focusMode = .continuousAutoFocus
+        captureDevice?.unlockForConfiguration()
+    }
     
     @IBAction func lensSliderValueChanged(_ slider: UISlider) {
         
@@ -78,15 +90,18 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         device?.unlockForConfiguration()
     }
 
-    //let imageView = UIImageView(frame: CGRect(x: 50, y: 50, width: 300, height: 300))
-
-    
     @IBAction func buttonPressed(_ sender: Any?) {
-        
+        setVolumeLevel(0.25)
         print(initialVolume)
-       
         
         takePhoto ()
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: shutterSound!)
+            audioPlayer.play()
+        } catch {
+            // couldn't load file :(
+        }
 
         captureImage {(newImage, error) in
             guard let image = newImage else {
@@ -95,17 +110,13 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             }
             let flippedImage = image.withHorizontallyFlippedOrientation()
             
-
             let squareImage = flippedImage.cropToSquare(image: flippedImage)
             let roundedImage = squareImage?.roundedImage()
             let newImage = roundedImage?.rotate(radians: -.pi/2) // Rotate 90 degrees
 
-
             try? PHPhotoLibrary.shared().performChangesAndWait {
                 PHAssetChangeRequest.creationRequestForAsset(from: newImage!)
             }
-        
-            self.setVolumeLevel(self.initialVolume)
         }
     }
 }
@@ -117,27 +128,7 @@ extension ViewController {
         func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
             
             guard error == nil else { print("Error capturing photo: \(error!)"); return }
-            PHPhotoLibrary.requestAuthorization { status in
-                guard status == .authorized else { return }
 
-                PHPhotoLibrary.shared().performChanges({
-                    // Add the captured photo's file data as the main resource for the Photos asset.
-                    let creationRequest = PHAssetCreationRequest.forAsset()
-                    creationRequest.addResource(with: .photo, data: photo.fileDataRepresentation()!, options: nil)
-                })
-            }
-            
-            if let error = error { self.photoCaptureCompletionBlock?(nil, error) }
-            
-            guard let imageData = photo.fileDataRepresentation()
-                else { return }
-            let capturedImage = UIImage.init(data: imageData , scale: 1.0)
-            let squareImage = capturedImage?.cropToSquare(image: image!)
-            
-            if let image = squareImage {
-                self.photoCaptureCompletionBlock?(image, nil)
-            }
-            
             //MARK: - Save image
             func saveImage() {
                 
@@ -145,7 +136,6 @@ extension ViewController {
                     else {
                     return
                 }
-                
                 UIImageWriteToSavedPhotosAlbum(selectedImage, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
             }
         }
@@ -183,47 +173,152 @@ extension ViewController {
             }
             do {
                 try currentDevice.lockForConfiguration()
-                try currentDevice.setTorchModeOn(level: 0.5) } catch { currentDevice.unlockForConfiguration() }
+                try currentDevice.setTorchModeOn(level: 0.25) } catch { currentDevice.unlockForConfiguration()
+            }
         }
     }
+}
+
+extension AVCaptureDevice {
     
-    private func findCamera() -> AVCaptureDevice? {
-        let deviceTypes: [AVCaptureDevice.DeviceType] = [
-            .builtInWideAngleCamera,
-            .builtInDualCamera,
-            .builtInTelephotoCamera
-        ]
-        
-        let discovery = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes,
-                                                         mediaType: .video,
-                                                         position: .back)
-        
-        return discovery.devices.first
+    // MARK: - device lookup
+    /// Returns the capture device for the desired device type and position.
+    /// #protip, NextLevelDevicePosition.avfoundationType can provide the AVFoundation type.
+    ///
+    /// - Parameters:
+    ///   - deviceType: Specified capture device type, (i.e. builtInMicrophone, builtInWideAngleCamera, etc.)
+    ///   - position: Desired position of device
+    /// - Returns: Capture device for the specified type and position, otherwise nil
+    public class func captureDevice(withType deviceType: AVCaptureDevice.DeviceType, forPosition position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        let deviceTypes: [AVCaptureDevice.DeviceType] = [deviceType]
+        if let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: position).devices.first {
+            return discoverySession
+        }
+        return nil
     }
+    
+    /// Returns the default wide angle video device for the desired position, otherwise nil.
+    ///
+    /// - Parameter position: Desired position of the device
+    /// - Returns: Wide angle video capture device, otherwise nil
+    public class func wideAngleVideoDevice(forPosition position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        let deviceTypes: [AVCaptureDevice.DeviceType] = [AVCaptureDevice.DeviceType.builtInWideAngleCamera]
+        if let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: position).devices.first {
+            return discoverySession
+        }
+        return nil
+    }
+    
+    /// Returns the default telephoto video device for the desired position, otherwise nil.
+    ///
+    /// - Parameter position: Desired position of the device
+    /// - Returns: Telephoto video capture device, otherwise nil
+    public class func telephotoVideoDevice(forPosition position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        let deviceTypes: [AVCaptureDevice.DeviceType] = [AVCaptureDevice.DeviceType.builtInTelephotoCamera]
+        if let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: position).devices.first {
+            return discoverySession
+        }
+        return nil
+    }
+    
+    /// Returns the primary duo camera video device, if available, else the default wide angel camera, otherwise nil.
+    ///
+    /// - Parameter position: Desired position of the device
+    /// - Returns: Primary video capture device found, otherwise nil
+    public class func primaryVideoDevice(forPosition position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        var deviceTypes: [AVCaptureDevice.DeviceType] = [AVCaptureDevice.DeviceType.builtInDualCamera]
+        if #available(iOS 11.0, *) {
+            deviceTypes.append(.builtInDualCamera)
+        } else {
+            deviceTypes.append(.builtInDuoCamera)
+        }
+        
+        // prioritize duo camera systems before wide angle
+        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: position)
+        for device in discoverySession.devices {
+            if #available(iOS 11.0, *) {
+                if (device.deviceType == AVCaptureDevice.DeviceType.builtInDualCamera) {
+                    return device
+                }
+            } else {
+                if (device.deviceType == AVCaptureDevice.DeviceType.builtInDuoCamera) {
+                    return device
+                }
+            }
+        }
+        return discoverySession.devices.first
+    }
+    
+    /// Returns the default video capture device, otherwise nil.
+    ///
+    /// - Returns: Default video capture device, otherwise nil
+    public class func videoDevice() -> AVCaptureDevice? {
+        return AVCaptureDevice.default(for: AVMediaType.video)
+    }
+}
+
+extension ViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setVolumeLevel(0.25)
         
-                setVolumeLevel(initialVolume)
-        
-
-
-        
-        
-        mainView.layer.cornerRadius = 120
-
         let cameraView = CALayer()
         let replicatorLayer = CAReplicatorLayer()
         let instanceCount = 2
         replicatorLayer.instanceCount = 2
         replicatorLayer.instanceCount = instanceCount
-        replicatorLayer.frame = CGRect(x: 51, y: 75, width: 225, height: 225)
-        replicatorLayer.instanceTransform = CATransform3DMakeTranslation(340, 0, 0)
+        replicatorLayer.frame = CGRect(x: 0, y: 15, width: 320, height: 320)
+        replicatorLayer.instanceTransform = CATransform3DMakeTranslation(366, 0, 0)
         replicatorLayer.addSublayer(cameraView)
         self.view.layer.addSublayer(replicatorLayer)
         
         var settings = AVCapturePhotoBracketSettings()
+        
+        if #available(iOS 10.0, *) {
+            // For iOS 10.0 +
+            let center  = UNUserNotificationCenter.current()
+            center.delegate = self as? UNUserNotificationCenterDelegate
+            center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
+                if error == nil{
+                    DispatchQueue.main.async(execute: {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    })
+                }
+            }
+        }else{
+            // Below iOS 10.0
+            
+            let settings = UIUserNotificationSettings(types: [.sound, .alert, .badge], categories: nil)
+            UIApplication.shared.registerUserNotificationSettings(settings)
+            
+            //or
+            //UIApplication.shared.registerForRemoteNotifications()
+        }
+        
+        @available(iOS 10.0, *)
+        func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+            
+        }
+        
+        @available(iOS 10.0, *)
+        func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            
+        }
+        
+        
+        func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+            // .. Receipt of device token
+        }
+        
+        
+        func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+            // handle error
+        }
+        
+        UIApplication.shared.unregisterForRemoteNotifications()
 
+        
         //Camera
         AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
             if response {
@@ -235,7 +330,7 @@ extension ViewController {
         session = AVCaptureSession()
         session!.sessionPreset = AVCaptureSession.Preset.high
                 
-        guard let backCamera = findCamera() else {
+        guard let backCamera = AVCaptureDevice.videoDevice() else {
             print("No camera found")
             return
         }
@@ -255,39 +350,34 @@ extension ViewController {
                 }
         
             // Configure camera
-        // Get AVCaptureBracketedStillImageSettings for a set of exposure values.
-        let exposureValues: [Float] = [-1, 0, +1]
-        let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias:)
-        let exposureSettings = exposureValues.map(makeAutoExposureSettings)
 
-        
         settings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0,
-                                                 processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc],
-                                                 bracketedSettings: exposureSettings)
-        settings.isLensStabilizationEnabled =
-            self.photoOutput!.isLensStabilizationDuringBracketedCaptureSupported
+                                                 processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc])
 
-               // .init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
-           // settings.isAutoStillImageStabilizationEnabled = true
+
+        if photoOutput!.isStillImageStabilizationSupported{
+            settings.isAutoStillImageStabilizationEnabled = true
+        }
+        if photoOutput!.isHighResolutionCaptureEnabled {
             settings.isHighResolutionPhotoEnabled = true
+        }
             settings.isDualCameraDualPhotoDeliveryEnabled = true
             settings.isAutoDualCameraFusionEnabled = false
-        // Shoot the bracket, using a custom class to handle capture delegate callbacks.
+
             if session!.canAddOutput(photoOutput!) {
                 session!.addOutput(photoOutput!)
                 
                 self.videoPreviewLayer = AVCaptureVideoPreviewLayer(session: session) as AVCaptureVideoPreviewLayer
                 self.videoPreviewLayer?.frame.size = self.cameraView.frame.size
-                self.videoPreviewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+                self.videoPreviewLayer.videoGravity = AVLayerVideoGravity.resizeAspect
                 self.videoPreviewLayer?.connection?.videoOrientation = .landscapeRight
-                self.videoPreviewLayer.frame = cameraView.frame
+                self.videoPreviewLayer.frame = self.cameraView.frame
                 cameraView.addSublayer(videoPreviewLayer)
                 
                 do {
                     try backCamera.lockForConfiguration()
-                    let zoomFactor:CGFloat = 2
+                    let zoomFactor:CGFloat = 1.0
                     backCamera.videoZoomFactor = zoomFactor
-                    //backCamera.unlockForConfiguration()
                     try backCamera.lockForConfiguration()
                     backCamera.focusMode = .autoFocus
                     backCamera.unlockForConfiguration()
@@ -322,14 +412,12 @@ extension ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         session.startRunning()
-
         flashActive()
     }
     
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+//        
         self.videoPreviewLayer?.frame.size = self.cameraView.frame.size
     }
     
@@ -344,13 +432,21 @@ extension ViewController {
     
     func captureImage(completion: @escaping (UIImage?, Error?) -> Void) {
         guard let captureSession = session, captureSession.isRunning else { completion(nil, CameraViewControllerError.captureSessionIsMissing); return }
-        
-        let exposureValues: [Float] = [-2, 0, +2]
+
+        let exposureValues: [Float] = [-1, 0, +1]
         let makeAutoExposureSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias:)
         let exposureSettings = exposureValues.map(makeAutoExposureSettings)
         let settings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0,
                                                      processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc],
-                                                     bracketedSettings: exposureSettings)
+                                                     bracketedSettings:
+            exposureSettings)
+        
+        if photoOutput!.isStillImageStabilizationSupported{
+            settings.isAutoStillImageStabilizationEnabled = true
+        }
+        if photoOutput!.isHighResolutionCaptureEnabled {
+            settings.isHighResolutionPhotoEnabled = true
+        }
         
         self.photoOutput?.capturePhoto(with: settings, delegate: self)
         
@@ -369,23 +465,14 @@ extension UIView {
             self.alpha = 0.0
             }, completion: completion)
         }
-    
-        func copyObject<T: UIView> () -> T? {
-            do {
-                let archivedData = try NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
-                
-                return try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(archivedData) as? T
-            } catch {
-                print("Couldn't write file")
-            }
-            return copyObject()
-    }
 }
 
 public extension UIImage {
     func cropToSquare(image: UIImage) -> UIImage? {
         var imageHeight = image.size.height
         var imageWidth = image.size.width
+        print(imageHeight)
+        print (imageWidth)
         
         if imageHeight > imageWidth {
             imageHeight = imageWidth
@@ -471,11 +558,7 @@ public extension UIImage {
             
         rotatedImage!.draw(in: CGRect(x: 20, y: 0, width: rotatedImage!.size.width, height: rotatedImage!.size.height))
         
-        //draw label
-        
-        //let vc = ViewController()
-        
-        
+        //draw label        
         let labelRect = CGRect(x: 50, y: 50, width: rotatedImage!.size.width - 100, height: rotatedImage!.size.height / 16)
         
         let timeStamp = UILabel(frame: labelRect)
@@ -491,9 +574,11 @@ public extension UIImage {
         print(now)
         timeStamp.backgroundColor = UIColor.clear
         timeStamp.textAlignment = .center
-        timeStamp.textColor = UIColor.gray
+        timeStamp.textColor = UIColor.darkGray
+        timeStamp.shadowColor = UIColor.white
+        timeStamp.shadowOffset = CGSize(width: 2, height: 2)
         timeStamp.font = UIFont.systemFont(ofSize: 30)
-        timeStamp.alpha = 0.5
+        timeStamp.alpha = 0.75
         timeStamp.text = now
         timeStamp.drawHierarchy(in: labelRect, afterScreenUpdates: true)
 
@@ -573,23 +658,22 @@ extension ViewController {
                 }
                 
                 if slider.value >= 0.6 {
-                    slider.value -= 0.5
+                    slider.value -= 0.19
                 } else if slider.value <= 0.4 {
-                    slider.value += 0.5
+                    slider.value += 0.19
                 }
                 
             } catch {
                 print("Could not observe outputVolume ", error)
             }
-     
-           
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "outputVolume" {
-            buttonPressed(Any?.self)
+           
             AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume")
             AVAudioSession.sharedInstance().addObserver(self, forKeyPath: "outputVolume", options: .new, context: nil)
+            buttonPressed(Any?.self)
         }
     }
     

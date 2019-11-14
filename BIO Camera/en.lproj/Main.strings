@@ -1,0 +1,57 @@
+
+/* Class = "UILabel"; text = "Light Level"; ObjectID = "1tI-dZ-Nvl"; */
+"1tI-dZ-Nvl.text" = "Light Level";
+
+/* Class = "UILabel"; text = "AutoFocus:"; ObjectID = "2ab-OO-4qW"; */
+"2ab-OO-4qW.text" = "AutoFocus:";
+
+/* Class = "UIViewController"; title = "Camera"; ObjectID = "BYZ-38-t0r"; */
+"BYZ-38-t0r.title" = "Camera";
+
+/* Class = "UILabel"; text = "ISO:"; ObjectID = "CqS-Hp-Igr"; */
+"CqS-Hp-Igr.text" = "ISO:";
+
+/* Class = "UILabel"; text = "Light Level:"; ObjectID = "Gfj-3f-aJ5"; */
+"Gfj-3f-aJ5.text" = "Light Level:";
+
+/* Class = "UITableViewController"; title = "SettingsViewController"; ObjectID = "Hi6-wn-oba"; */
+"Hi6-wn-oba.title" = "SettingsViewController";
+
+/* Class = "UILabel"; text = "Exposure Duration:"; ObjectID = "OWA-4c-1De"; */
+"OWA-4c-1De.text" = "Exposure Duration:";
+
+/* Class = "UIBarButtonItem"; title = "Restore Default Settings"; ObjectID = "RI2-4c-IUo"; */
+"RI2-4c-IUo.title" = "Restore Default Settings";
+
+/* Class = "UILabel"; text = "Zoom Factor:"; ObjectID = "VTc-Yb-kgS"; */
+"VTc-Yb-kgS.text" = "Zoom Factor:";
+
+/* Class = "UILabel"; text = "180"; ObjectID = "axZ-9i-fvK"; */
+"axZ-9i-fvK.text" = "180";
+
+/* Class = "UINavigationItem"; title = "Camera Settings"; ObjectID = "bYE-sB-wNy"; */
+"bYE-sB-wNy.title" = "Camera Settings";
+
+/* Class = "UILabel"; text = "0.30"; ObjectID = "biO-zL-AVS"; */
+"biO-zL-AVS.text" = "0.30";
+
+/* Class = "UILabel"; text = "0.5"; ObjectID = "fyS-AY-y7A"; */
+"fyS-AY-y7A.text" = "0.5";
+
+/* Class = "UILabel"; text = "Color Temperature:"; ObjectID = "hA5-c7-Uc4"; */
+"hA5-c7-Uc4.text" = "Color Temperature:";
+
+/* Class = "UILabel"; text = "Focus"; ObjectID = "kDT-Jf-bp1"; */
+"kDT-Jf-bp1.text" = "Focus";
+
+/* Class = "UILabel"; text = "Continuous Focus:"; ObjectID = "lbo-Pu-rhx"; */
+"lbo-Pu-rhx.text" = "Continuous Focus:";
+
+/* Class = "UILabel"; text = "3500"; ObjectID = "oL7-iS-EpI"; */
+"oL7-iS-EpI.text" = "3500";
+
+/* Class = "UILabel"; text = "0.05"; ObjectID = "pBw-SC-t6t"; */
+"pBw-SC-t6t.text" = "0.05";
+
+/* Class = "UILabel"; text = "2"; ObjectID = "uFS-7t-pdQ"; */
+"uFS-7t-pdQ.text" = "2";

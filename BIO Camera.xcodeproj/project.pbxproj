@@ -1,0 +1,371 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3D228F37237CBEB100D89C5C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DC93AEE237C900B00A8EDDF /* LaunchScreen.storyboard */; };
+		3D228F38237CBEB700D89C5C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DC93AEF237C903000A8EDDF /* Main.storyboard */; };
+		3D56A838237B538B00F8D46F /* BIO Camera.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3D56A836237B538B00F8D46F /* BIO Camera.xcdatamodeld */; };
+		3D56A83A237B539C00F8D46F /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56A839237B539C00F8D46F /* CameraViewController.swift */; };
+		3D56A83C237B53AF00F8D46F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56A83B237B53AF00F8D46F /* SettingsViewController.swift */; };
+		3D56A83E237B53C200F8D46F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56A83D237B53C200F8D46F /* AppDelegate.swift */; };
+		3D56A841237B543900F8D46F /* AppIcon.appiconset in Resources */ = {isa = PBXBuildFile; fileRef = 3D56A83F237B543900F8D46F /* AppIcon.appiconset */; };
+		3D56A842237B543900F8D46F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D56A840237B543900F8D46F /* Assets.xcassets */; };
+		3D56A84C237B548800F8D46F /* shutter_click.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3D56A84B237B548800F8D46F /* shutter_click.mp3 */; };
+		3D91C33422D68C8000297365 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D91C33322D68C8000297365 /* UIKit.framework */; };
+		3DC93AEB237C7E6E00A8EDDF /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 3D56A864237B84BB00F8D46F /* Base.lproj */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3D56A837237B538B00F8D46F /* ReplicateCameraView.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ReplicateCameraView.xcdatamodel; sourceTree = "<group>"; };
+		3D56A839237B539C00F8D46F /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "BIO Camera/CameraViewController.swift"; sourceTree = SOURCE_ROOT; };
+		3D56A83B237B53AF00F8D46F /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = "BIO Camera/SettingsViewController.swift"; sourceTree = SOURCE_ROOT; };
+		3D56A83D237B53C200F8D46F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "BIO Camera/AppDelegate.swift"; sourceTree = "<group>"; };
+		3D56A83F237B543900F8D46F /* AppIcon.appiconset */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AppIcon.appiconset; path = "BIO Camera/AppIcon.appiconset"; sourceTree = "<group>"; };
+		3D56A840237B543900F8D46F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "BIO Camera/Assets.xcassets"; sourceTree = "<group>"; };
+		3D56A84B237B548800F8D46F /* shutter_click.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = shutter_click.mp3; path = "BIO Camera/shutter_click.mp3"; sourceTree = "<group>"; };
+		3D56A851237B592400F8D46F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "BIO Camera/Info.plist"; sourceTree = "<group>"; };
+		3D56A864237B84BB00F8D46F /* Base.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Base.lproj; path = "BIO Camera/Base.lproj"; sourceTree = "<group>"; };
+		3D91C33322D68C8000297365 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3DA57FFB22BAB9D000F952CA /* BIO Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BIO Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DC93AEE237C900B00A8EDDF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "BIO Camera/LaunchScreen.storyboard"; sourceTree = SOURCE_ROOT; };
+		3DC93AEF237C903000A8EDDF /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Main.storyboard; path = "BIO Camera/Main.storyboard"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3DA57FF822BAB9D000F952CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D91C33422D68C8000297365 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3D91C33222D68C8000297365 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3D91C33322D68C8000297365 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3DA57FF222BAB9D000F952CA = {
+			isa = PBXGroup;
+			children = (
+				3DC93AEF237C903000A8EDDF /* Main.storyboard */,
+				3DC93AEE237C900B00A8EDDF /* LaunchScreen.storyboard */,
+				3D56A864237B84BB00F8D46F /* Base.lproj */,
+				3D56A851237B592400F8D46F /* Info.plist */,
+				3D56A84B237B548800F8D46F /* shutter_click.mp3 */,
+				3D56A83F237B543900F8D46F /* AppIcon.appiconset */,
+				3D56A840237B543900F8D46F /* Assets.xcassets */,
+				3D56A83D237B53C200F8D46F /* AppDelegate.swift */,
+				3D56A83B237B53AF00F8D46F /* SettingsViewController.swift */,
+				3D56A839237B539C00F8D46F /* CameraViewController.swift */,
+				3D56A836237B538B00F8D46F /* BIO Camera.xcdatamodeld */,
+				3DA57FFC22BAB9D000F952CA /* Products */,
+				3D91C33222D68C8000297365 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		3DA57FFC22BAB9D000F952CA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3DA57FFB22BAB9D000F952CA /* BIO Camera.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3DA57FFA22BAB9D000F952CA /* BIO Camera */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DA5801022BAB9D100F952CA /* Build configuration list for PBXNativeTarget "BIO Camera" */;
+			buildPhases = (
+				3DA57FF722BAB9D000F952CA /* Sources */,
+				3DA57FF822BAB9D000F952CA /* Frameworks */,
+				3DA57FF922BAB9D000F952CA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BIO Camera";
+			productName = ReplicateCameraView;
+			productReference = 3DA57FFB22BAB9D000F952CA /* BIO Camera.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3DA57FF322BAB9D000F952CA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1020;
+				LastUpgradeCheck = 1120;
+				ORGANIZATIONNAME = "Howard Ellenberger";
+				TargetAttributes = {
+					3DA57FFA22BAB9D000F952CA = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 3DA57FF622BAB9D000F952CA /* Build configuration list for PBXProject "BIO Camera" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3DA57FF222BAB9D000F952CA;
+			productRefGroup = 3DA57FFC22BAB9D000F952CA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3DA57FFA22BAB9D000F952CA /* BIO Camera */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3DA57FF922BAB9D000F952CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DC93AEB237C7E6E00A8EDDF /* Base.lproj in Resources */,
+				3D56A84C237B548800F8D46F /* shutter_click.mp3 in Resources */,
+				3D56A841237B543900F8D46F /* AppIcon.appiconset in Resources */,
+				3D228F38237CBEB700D89C5C /* Main.storyboard in Resources */,
+				3D228F37237CBEB100D89C5C /* LaunchScreen.storyboard in Resources */,
+				3D56A842237B543900F8D46F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3DA57FF722BAB9D000F952CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D56A83E237B53C200F8D46F /* AppDelegate.swift in Sources */,
+				3D56A83C237B53AF00F8D46F /* SettingsViewController.swift in Sources */,
+				3D56A83A237B539C00F8D46F /* CameraViewController.swift in Sources */,
+				3D56A838237B538B00F8D46F /* BIO Camera.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3DA5800E22BAB9D100F952CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				"OTHER_LDFLAGS[arch=*]" = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.howard.retinaAI.;
+				PRODUCT_NAME = "BIO Camera";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				"WARNING_LDFLAGS[arch=*]" = "";
+			};
+			name = Debug;
+		};
+		3DA5800F22BAB9D100F952CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.howard.retinaAI.;
+				PRODUCT_NAME = "BIO Camera";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3DA5801122BAB9D100F952CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = S4D83HCYW4;
+				INFOPLIST_FILE = "BIO Camera/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.BIO.camera;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		3DA5801222BAB9D100F952CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = S4D83HCYW4;
+				INFOPLIST_FILE = "BIO Camera/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.BIO.camera;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3DA57FF622BAB9D000F952CA /* Build configuration list for PBXProject "BIO Camera" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DA5800E22BAB9D100F952CA /* Debug */,
+				3DA5800F22BAB9D100F952CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3DA5801022BAB9D100F952CA /* Build configuration list for PBXNativeTarget "BIO Camera" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DA5801122BAB9D100F952CA /* Debug */,
+				3DA5801222BAB9D100F952CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		3D56A836237B538B00F8D46F /* BIO Camera.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				3D56A837237B538B00F8D46F /* ReplicateCameraView.xcdatamodel */,
+			);
+			currentVersion = 3D56A837237B538B00F8D46F /* ReplicateCameraView.xcdatamodel */;
+			name = "BIO Camera.xcdatamodeld";
+			path = "BIO Camera/BIO Camera.xcdatamodeld";
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 3DA57FF322BAB9D000F952CA /* Project object */;
+}
